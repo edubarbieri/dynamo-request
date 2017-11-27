@@ -39,7 +39,7 @@ Simple library to help update properties and call methods in dynamo admin.
     ];
 
     const updates = [propertyReq, methodReq];
-    request.process(hosts, updates);
+    request.process(hosts, updates, userPassword);
     
 ```
 

@@ -4,12 +4,13 @@ dynamo-request
 Simple library to help update properties and call methods in dynamo admin.
 
 ## Installation
+```
+  npm install dynamo-request
+```
 
-  `npm install dynamo-request`
-
-## Usage
-    ```javascript
-    const request = require('./src/dynamo-request.js');
+## Usage    
+```javascript
+    const request = require('dynamo-request');
 
     const userPassword = "admin:admin";
 
@@ -40,7 +41,7 @@ Simple library to help update properties and call methods in dynamo admin.
     const updates = [propertyReq, methodReq];
     request.process(hosts, updates);
     
-    ```
+```
 
 ## Contributing
 

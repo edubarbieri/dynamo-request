@@ -1,5 +1,5 @@
 {
-  "name": "dynamo-update",
+  "name": "dynamo-request",
   "version": "0.1.0",
   "description": "Simple library to help update properties and call methods in dynamo admin.",
   "main": "index.js",

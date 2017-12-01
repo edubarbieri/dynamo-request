@@ -13,8 +13,8 @@ const request = require('request');
  * @param {string} userAndPassword - User and password concatend with colon, Ex: admin:passwd
  * @returns {void}
  */
-function updateProperty(host, postData, userAndPassword){
-    makeRequest(host, postData, userAndPassword);    
+function updateProperty(host, postData, userAndPassword, callback){
+    makeRequest(host, postData, userAndPassword, callback);    
 }
 
 /**
@@ -26,8 +26,8 @@ function updateProperty(host, postData, userAndPassword){
  * @param {string} userAndPassword - User and password concatend with colon, Ex: admin:passwd
  * @returns {void}
  */
-function invokeMethod(host, postData, userAndPassword){
-    makeRequest(host, postData, userAndPassword);
+function invokeMethod(host, postData, userAndPassword, callback){
+    makeRequest(host, postData, userAndPassword, callback);
 }
 
 /**
@@ -65,7 +65,7 @@ function processSingleHost(host, postData, userAndPassword){
     makeRequest(host, postData, userAndPassword);
 }
 
-function makeRequest(host, postData, userAndPassword) {
+function makeRequest(host, postData, userAndPassword, callback) {
     
     var url = host + '/dyn/admin/nucleus' + postData.component;
     if (!url.endsWith('/')) {
@@ -78,7 +78,8 @@ function makeRequest(host, postData, userAndPassword) {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': 'Basic ' + new Buffer(userAndPassword).toString('base64')
         },
-        form: postData
+        form: postData,
+        timeout : 4000
     };
     if(postData.propertyName){
         console.log('Setting ' + postData.propertyName + ' in ' + url);
@@ -86,9 +87,36 @@ function makeRequest(host, postData, userAndPassword) {
         console.log('Calling method ' + postData.invokeMethod + ' in ' + url);
     }
     request(options, function (error, response, body) {
+        let resultError;
         if (error || response.statusCode != 200) {
+            let fullMsg = 'ERROR calling: ' + this.href + ', status is: ' + (response ? response.statusCode : 'none') + ', Error: ' + error || '';
             console.log('======ERROR calling: ' + this.href + ', status is: ' + (response ? response.statusCode : 'none') + ', Error: ' + error);
+            
+            resultError = {
+                'requestError' : error || {},
+                'longMessage' : fullMsg,
+                'message' :  (error ? error.message : 'Response code is ' + response.statusCode)
+            };
         }
+        let resultData = Object.assign({}, postData);
+        resultData.host = host;
+
+        if(typeof callback == 'function'){
+            let argNumber = callback.length;
+            switch (argNumber) {
+                case 0:
+                    callback();
+                    break;
+                case 1:
+                    callback(resultError);
+                    break;
+                default:
+                    callback(resultError, resultData);
+                    break;
+            }
+        }
+
+
     });
 }
 

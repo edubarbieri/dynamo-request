@@ -21,14 +21,26 @@ Simple library to help update properties and call methods in dynamo admin.
         newValue: 'true'
     };
 
-    request.updateProperty('http://localhost:10181', propertyReq, userPassword);
+    request.updateProperty('http://localhost:10181', propertyReq, userPassword, (error, requestData) => {
+        if(error){
+            console.log('Error on execute operation: ', error);
+            return;
+        }
+        console.log('Request data: ', requestData);
+    }));
 
     //Invoke Method
     const methodReq = {
         component : '/atg/commerce/inventory/InventoryCache/',
         invokeMethod: 'flush'
     };
-    request.invokeMethod('http://localhost:10181', methodReq, userPassword);
+    request.invokeMethod('http://localhost:10181', methodReq, userPassword, (error, requestData) => {
+        if(error){
+            console.log('Error on execute operation: ', error);
+            return;
+        }
+        console.log('Request data: ', requestData);
+    }));
 
 
     //You can also combine request for multiple hosts, and update various properties and methods.
